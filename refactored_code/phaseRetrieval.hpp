@@ -12,4 +12,3 @@ void phaseRetrieval(img_t<T>& kernel, const img_t<T>& blurredPatch,
 #include "phaseRetrieval.cpp"
 
 #endif
-

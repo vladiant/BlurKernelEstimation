@@ -5,10 +5,9 @@
 #include "options.hpp"
 
 template <typename T>
-void estimateKernel(img_t<T>& kernel, const img_t<T>& img,
-                    int kernelSize, const options& opts);
+void estimateKernel(img_t<T>& kernel, const img_t<T>& img, int kernelSize,
+                    const options& opts);
 
 #include "estimateKernel.cpp"
 
 #endif
-

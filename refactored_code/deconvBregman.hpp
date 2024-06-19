@@ -10,9 +10,8 @@ void unpad(img_t<T>& u, const img_t<T>& f, const img_t<T>& K);
 
 template <typename T>
 void deconvBregman(img_t<T>& u, const img_t<T>& f, const img_t<T>& K,
-                   int numIter=30, T lambda=2000., T beta=400.);
+                   int numIter = 30, T lambda = 2000., T beta = 400.);
 
 #include "deconvBregman.cpp"
 
 #endif
-

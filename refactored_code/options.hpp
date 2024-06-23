@@ -2,6 +2,9 @@
 
 #include <string>
 
+// TODO: Set it as a proper type name
+using flt = double;
+
 struct options {
   std::string input;
   int kernelSize;

@@ -260,8 +260,8 @@ static void fail(const char *fmt, ...)
 #else  // IIO_ABORT_ON_ERROR
 #ifdef NDEBUG
   exit(-1);
-#else  // NDEBUG
-       // print_trace(stderr);
+#else   // NDEBUG
+        // print_trace(stderr);
   exit(*(int *)0x43);
 #endif  // NDEBUG
 #endif  // IIO_ABORT_ON_ERROR
@@ -2200,7 +2200,8 @@ static int read_beheaded_rim_ccimage(struct iio_image *x, FILE *f, bool swp) {
           (size_t)nsamples, r);
     uint8_t *good_data = xmalloc(nsamples);
     FORJ(pm_nrow)
-    FORI(pm_ncol) FORL(pm_np) good_data[l + (i + j * pm_ncol) * pm_np] =
+    FORI(pm_ncol)
+    FORL(pm_np) good_data[l + (i + j * pm_ncol) * pm_np] =
         data[i + j * pm_ncol + l * pm_ncol * pm_nrow];
     xfree(data);
     data = good_data;
@@ -2216,7 +2217,8 @@ static int read_beheaded_rim_ccimage(struct iio_image *x, FILE *f, bool swp) {
           (size_t)nsamples, r);
     float *good_data = xmalloc(4 * nsamples);
     FORJ(pm_nrow)
-    FORI(pm_ncol) FORL(pm_np) good_data[l + (i + j * pm_ncol) * pm_np] =
+    FORI(pm_ncol)
+    FORL(pm_np) good_data[l + (i + j * pm_ncol) * pm_np] =
         data[i + j * pm_ncol + l * pm_ncol * pm_nrow];
     xfree(data);
     data = good_data;

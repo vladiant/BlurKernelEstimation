@@ -4,6 +4,7 @@
 
 #include "deconvBregman.hpp"
 #include "image.hpp"
+#include "options.hpp"
 
 /// Algorithm 6
 template <typename T>

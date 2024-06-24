@@ -1,9 +1,11 @@
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.22)
 
 project(BlurKernelEstimation)
 
-find_package(PkgConfig REQUIRED)
-pkg_search_module(FFTW REQUIRED fftw3 IMPORTED_TARGET)
+# Adapted from
+# https://gitlab.psi.ch/nemu/musrfit/blob/root6/cmake/FindFFTW3.cmake
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake")
+find_package(FFTW3 REQUIRED)
 
 find_package(PNG REQUIRED)
 find_package(JPEG REQUIRED)
@@ -69,7 +71,10 @@ target_link_libraries(
    ${PROJECT_NAME}
    PRIVATE
       $<$<CXX_COMPILER_ID:Clang>:-fsanitize=address>
-      PkgConfig::FFTW -lfftw3f #PkgConfig::FFTW -lfftw3_thread
+      FFTW3::FFTW3
+      FFTW3::FFTW3F
+    #   FFTW3::FFTW3F_OMP
+    #   FFTW3::FFTW3_OMP
       PNG::PNG
       JPEG::JPEG
       TIFF::TIFF

@@ -7,6 +7,8 @@ project(BlurKernelEstimation)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake")
 find_package(FFTW3 REQUIRED)
 
+# TODO: define FFTW_HAS_THREADS if library found
+
 find_package(PNG REQUIRED)
 find_package(JPEG REQUIRED)
 find_package(TIFF REQUIRED)
@@ -64,17 +66,15 @@ target_compile_options(
     PRIVATE
          $<$<CXX_COMPILER_ID:MSVC>:/W4 /WX>
          $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-Wall -Wextra -Wpedantic>
-         $<$<CXX_COMPILER_ID:Clang>:-fsanitize=address>
 )
 
 target_link_libraries(
    ${PROJECT_NAME}
    PRIVATE
-      $<$<CXX_COMPILER_ID:Clang>:-fsanitize=address>
+      $<$<NOT:$<CXX_COMPILER_ID:Clang>>:FFTW3::FFTW3_OMP> # use OpenMP only if not clang
+      $<$<NOT:$<CXX_COMPILER_ID:Clang>>:FFTW3::FFTW3F_OMP> # use OpenMP only if not clang
       FFTW3::FFTW3
       FFTW3::FFTW3F
-    #   FFTW3::FFTW3F_OMP
-    #   FFTW3::FFTW3_OMP
       PNG::PNG
       JPEG::JPEG
       TIFF::TIFF

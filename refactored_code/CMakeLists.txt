@@ -68,6 +68,10 @@ target_compile_options(
          $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-Wall -Wextra -Wpedantic>
 )
 
+if(FFTW3_THREAD_LIBRARY)
+    add_compile_definitions(FFTW_HAS_THREADS)
+endif()
+
 target_link_libraries(
    ${PROJECT_NAME}
    PRIVATE

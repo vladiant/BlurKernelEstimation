@@ -66,6 +66,12 @@ target_compile_options(
     PRIVATE
          $<$<CXX_COMPILER_ID:MSVC>:/W4 /WX>
          $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-Wall -Wextra -Wpedantic>
+         # optimize for speed
+         $<$<CXX_COMPILER_ID:MSVC>:/Ox /O2>
+         $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-O3>
+         # target architecture x86
+         $<$<CXX_COMPILER_ID:MSVC>:/arch:IA32 /arch:SSE /arch:SSE2 /arch:AVX /arch:AVX2 /arch:AVX512>
+         $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-march=native -mtune=native>
 )
 
 if(FFTW3_THREAD_LIBRARY)

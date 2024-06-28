@@ -2201,7 +2201,8 @@ static int read_beheaded_rim_ccimage(struct iio_image *x, FILE *f, bool swp) {
     uint8_t *good_data = xmalloc(nsamples);
     FORJ(pm_nrow)
     FORI(pm_ncol)
-    FORL(pm_np) good_data[l + (i + j * pm_ncol) * pm_np] =
+    FORL(pm_np)
+    good_data[l + (i + j * pm_ncol) * pm_np] =
         data[i + j * pm_ncol + l * pm_ncol * pm_nrow];
     xfree(data);
     data = good_data;
@@ -2218,7 +2219,8 @@ static int read_beheaded_rim_ccimage(struct iio_image *x, FILE *f, bool swp) {
     float *good_data = xmalloc(4 * nsamples);
     FORJ(pm_nrow)
     FORI(pm_ncol)
-    FORL(pm_np) good_data[l + (i + j * pm_ncol) * pm_np] =
+    FORL(pm_np)
+    good_data[l + (i + j * pm_ncol) * pm_np] =
         data[i + j * pm_ncol + l * pm_ncol * pm_nrow];
     xfree(data);
     data = good_data;

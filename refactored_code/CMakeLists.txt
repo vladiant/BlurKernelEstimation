@@ -13,7 +13,9 @@ find_package(PNG REQUIRED)
 find_package(JPEG REQUIRED)
 find_package(TIFF REQUIRED)
 
-find_package(OpenMP REQUIRED)
+if(!CXX_COMPILER_ID:Clang)
+    find_package(OpenMP REQUIRED)
+endif()
 
 add_executable(
     ${PROJECT_NAME}
@@ -88,5 +90,5 @@ target_link_libraries(
       PNG::PNG
       JPEG::JPEG
       TIFF::TIFF
-      OpenMP::OpenMP_CXX
+      $<$<NOT:$<CXX_COMPILER_ID:Clang>>:OpenMP::OpenMP_CXX> # use OpenMP only if not clang
 )

@@ -1,4 +1,6 @@
+#ifdef _OPENMP
 #include <omp.h>
+#endif
 
 #include <iostream>
 #include <string>
@@ -87,7 +89,13 @@ static options parse_args(int argc, char** argv) {
 }
 
 int main(int argc, char** argv) {
-  img_t<flt>::use_threading(omp_get_max_threads());
+#ifdef _OPENMP
+  const int max_threads = omp_get_max_threads();
+#else
+  const int max_threads = 1;
+#endif
+
+  img_t<flt>::use_threading(max_threads);
 
   struct options opts = parse_args(argc, argv);
 

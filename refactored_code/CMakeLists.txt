@@ -13,7 +13,7 @@ find_package(PNG REQUIRED)
 find_package(JPEG REQUIRED)
 find_package(TIFF REQUIRED)
 
-if(!CXX_COMPILER_ID:Clang)
+if(NOT CMAKE_CXX_COMPILER_ID MATCHES "Clang")
     find_package(OpenMP REQUIRED)
 endif()
 

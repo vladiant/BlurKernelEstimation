@@ -21,6 +21,10 @@ add_executable(
     ${PROJECT_NAME}
     tvdeconv_20120607/basic.c
     tvdeconv_20120607/basic.h
+    tvdeconv_20120607/tvregopt.h
+    tvdeconv_20120607/util_deconv.h
+    # tvdeconv_20120607/usolve_dct_inc.c
+    # tvdeconv_20120607/usolve_dft_inc.c
     tvdeconv_20120607/tvreg.c
     tvdeconv_20120607/tvreg.h
     tvdeconv_20120607/num.h
@@ -81,7 +85,7 @@ if(FFTW3_THREAD_LIBRARY)
 endif()
 
 # Required for tvdeconv_20120607
-add_compile_definitions(TVREG_DECONV)
+add_compile_definitions(TVREG_DECONV=1)
 
 target_link_libraries(
    ${PROJECT_NAME}

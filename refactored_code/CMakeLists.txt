@@ -72,6 +72,7 @@ target_compile_options(
     PRIVATE
          $<$<CXX_COMPILER_ID:MSVC>:/W4 /WX>
          $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-Wall -Wextra -Wpedantic>
+         $<$<NOT:$<CXX_COMPILER_ID:Clang>>:${OpenMP_CXX_FLAGS}> # use OpenMP only if not clang
          # optimize for speed
          $<$<CXX_COMPILER_ID:MSVC>:/Ox /O2>
          $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-O3>

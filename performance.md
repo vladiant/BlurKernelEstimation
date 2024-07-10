@@ -11,3 +11,4 @@ time ./main hollywood.jpg 15 kernel.tif deblurred.png
 | Base code | 12.846 |
 | Clang (no OMP) | 36.516 |
 | GCC (no OMP) | 36.109 |
+| GCC | 13.618 |

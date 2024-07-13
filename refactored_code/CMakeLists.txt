@@ -78,7 +78,7 @@ target_compile_options(
          $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-O3>
          # target architecture x86
          $<$<CXX_COMPILER_ID:MSVC>:/arch:IA32 /arch:SSE /arch:SSE2 /arch:AVX /arch:AVX2 /arch:AVX512>
-        #  $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-march=native -mtune=native>
+        #  $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-march=native -mtune=native> # no effect observed
 )
 
 if(FFTW3_THREAD_LIBRARY)

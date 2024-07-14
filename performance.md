@@ -12,8 +12,12 @@ time ./main hollywood.jpg 15 kernel.tif deblurred.png
 | Clang (no OMP) | 36.516 |
 | GCC (no OMP) | 36.109 |
 | GCC | 11.556 |
-| GCC (-O2) |  |
-| GCC (-O1) |  |
+| GCC (-O2) | 12.527 |
+| GCC (-O1) | 12.284 |
+| GCC (-O0) | 24.458 |
+| GCC (Debug) | 24.402 |
+| GCC (Release) | 11.755 |
 
 ## Notes
 * The `-march=native` and `-mtune=native` do not seem to have effect on performance.
+* The `-O3` and `Release` configuration show best performance

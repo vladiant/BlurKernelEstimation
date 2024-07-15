@@ -28,6 +28,7 @@ add_executable(
     tvdeconv_20120607/tvreg.c
     tvdeconv_20120607/tvreg.h
     tvdeconv_20120607/num.h
+    tvdeconv_20120607/util_deconv.h
     angleSet.cpp
     angleSet.hpp
     args.hxx

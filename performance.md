@@ -1,7 +1,7 @@
 ## Test command
 
 ```bash
-time ./main hollywood.jpg 15 kernel.tif deblurred.png
+time ./main hollywood.jpg 15 kernel.tif deblurred.png --seed=1234
 ```
 
 ## Performance 

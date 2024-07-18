@@ -122,7 +122,7 @@ static num UUpdate(tvregsolver *S) {
  *
  * Extends data "abcde" to "...cbabcdedcbabcde..."
  */
-static ATTRIBUTE_ALWAYSINLINE int WSymExtension(int N, int i) {
+inline int WSymExtension(int N, int i) {
   while (1) {
     if (i < 0)
       i = -i;
@@ -141,7 +141,7 @@ static ATTRIBUTE_ALWAYSINLINE int WSymExtension(int N, int i) {
  *
  * Extends data "abcde" to "...deabcdeabcdeabc..."
  */
-static ATTRIBUTE_ALWAYSINLINE int PeriodicExtension(int N, int i) {
+inline int PeriodicExtension(int N, int i) {
   while (1) {
     if (i < 0)
       i += N;

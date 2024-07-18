@@ -153,13 +153,8 @@ typedef __int32 int32_t;
 /** @brief Macro for the unused attribue GNU extension */
 #define ATTRIBUTE_UNUSED __attribute__((unused))
 #endif
-#ifndef ATTRIBUTE_ALWAYSINLINE
-/** @brief Macro for the always inline attribue GNU extension */
-#define ATTRIBUTE_ALWAYSINLINE __attribute__((always_inline))
-#endif
 #else
 #define ATTRIBUTE_UNUSED
-#define ATTRIBUTE_ALWAYSINLINE
 #endif
 
 /* Error messaging */

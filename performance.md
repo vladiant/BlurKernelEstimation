@@ -4,6 +4,10 @@
 time ./main hollywood.jpg 15 kernel.tif deblurred.png --seed=1234
 ```
 
+## Expected result
+
+`refactored_code/ref_deblurred.png`
+
 ## Performance 
 
 | Case | Time, s |

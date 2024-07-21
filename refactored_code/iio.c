@@ -2768,7 +2768,7 @@ static int read_beheaded_vrt(struct iio_image *x, FILE *fin, char *header,
     has_fname += xml_get_tag_content(fname, line, "SourceFilename");
     if (pos_cx == 4 && has_fname == 1) {
       pos_cx = has_fname = 0;
-      int wt, ht;
+      int wt = 0, ht = 0;
       snprintf(fullfname, FILENAME_MAX, "%s/%s", dirvrt2, fname);
       float *xt = iio_read_image_float(fullfname, &wt, &ht);
       for (int j = 0; j < pos[3]; j++)

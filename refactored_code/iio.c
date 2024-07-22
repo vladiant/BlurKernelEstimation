@@ -1666,7 +1666,8 @@ static TIFF *tiffopen_fancy(const char *filename, char *mode) {
   if (aftercomma != ndigits) goto def;
 
   char buf[FILENAME_MAX];
-  strncpy(buf, filename, FILENAME_MAX);
+  buf[FILENAME_MAX - 1] = 0;
+  strncpy(buf, filename, FILENAME_MAX - 1);
   comma = strrchr(buf, ',');
   *comma = '\0';
   int index = atoi(comma + 1);
@@ -2754,8 +2755,9 @@ static int read_beheaded_vrt(struct iio_image *x, FILE *fin, char *header,
   int pos[4] = {0, 0, 0, 0}, pos_cx = 0, has_fname = 0;
 
   // obtain the path where the vrt file is located
+  dirvrt[n - 1] = 0;
   strncpy(dirvrt, global_variable_containing_the_name_of_the_last_opened_file,
-          n);
+          n - 1);
   char *dirvrt2 = dirname(dirvrt);
 
   while (1) {

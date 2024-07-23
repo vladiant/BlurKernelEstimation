@@ -1666,8 +1666,8 @@ static TIFF *tiffopen_fancy(const char *filename, char *mode) {
   if (aftercomma != ndigits) goto def;
 
   char buf[FILENAME_MAX];
-  buf[FILENAME_MAX - 1] = 0;
-  strncpy(buf, filename, FILENAME_MAX - 1);
+  buf[sizeof(buf) - 1] = 0;
+  strncpy(buf, filename, sizeof(buf) - 1);
   comma = strrchr(buf, ',');
   *comma = '\0';
   int index = atoi(comma + 1);
@@ -3096,9 +3096,15 @@ static int read_beheaded_whatever(struct iio_image *x, FILE *fin, char *header,
   // char command_format[] = "convert - %s < %s\0";
   char command_format[] = "/usr/bin/convert - %s < %s\0";
   char ppmname[strlen(filename) + 5];
-  snprintf(ppmname, FILENAME_MAX, "%s.ppm", filename);
+  ppmname[sizeof(ppmname) - 1] = 0;
+  const size_t ppmname_size =
+      sizeof(ppmname) - 1 > FILENAME_MAX ? FILENAME_MAX : sizeof(ppmname) - 1;
+  snprintf(ppmname, ppmname_size, "%s.ppm", filename);
   char command[strlen(command_format) + 1 + 2 * strlen(filename)];
-  snprintf(command, FILENAME_MAX, command_format, ppmname, filename);
+  command[sizeof(command) - 1] = 0;
+  const size_t command_size =
+      sizeof(command) - 1 > FILENAME_MAX ? FILENAME_MAX : sizeof(command) - 1;
+  snprintf(command, command_size, command_format, ppmname, filename);
   IIO_DEBUG("COMMAND: %s\n", command);
   int r = system(command);
   IIO_DEBUG("command returned %d\n", r);
@@ -3646,7 +3652,8 @@ static bool comma_named_tiff(const char *filename) {
   if (lnumber != ldigits) return false;
 
   char rfilename[FILENAME_MAX];
-  strncpy(rfilename, filename, FILENAME_MAX);
+  rfilename[sizeof(rfilename) - 1] = 0;
+  strncpy(rfilename, filename, sizeof(rfilename) - 1);
   comma = rfilename + (comma - filename);
   *comma = '\0';
 
@@ -3817,7 +3824,10 @@ static int read_image(struct iio_image *x, const char *fname) {
   // check for URL
   if (fname == strstr(fname, "http://") || fname == strstr(fname, "https://")) {
     // TODO: for security, sanitize the fname
-    char tfn[FILENAME_MAX], cmd[FILENAME_MAX];
+    char tfn[FILENAME_MAX];
+    tfn[sizeof(tfn) - 1] = 0;
+    char cmd[FILENAME_MAX];
+    cmd[sizeof(cmd) - 1] = 0;
     fill_temporary_filename(tfn);
     snprintf(cmd, FILENAME_MAX, "wget %s -q -O %s", fname, tfn);
     int rsys = system(cmd);

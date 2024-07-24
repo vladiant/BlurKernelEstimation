@@ -3097,9 +3097,8 @@ static int read_beheaded_whatever(struct iio_image *x, FILE *fin, char *header,
   char command_format[] = "/usr/bin/convert - %s < %s\0";
   char ppmname[strlen(filename) + 5];
   ppmname[sizeof(ppmname) - 1] = 0;
-  const size_t ppmname_size =
-      sizeof(ppmname) - 1 > FILENAME_MAX ? FILENAME_MAX : sizeof(ppmname) - 1;
-  snprintf(ppmname, ppmname_size, "%s.ppm", filename);
+  char ppmname_format[] = "%s.ppm";
+  snprintf(ppmname, sizeof(ppmname) - 1, ppmname_format, filename);
   char command[strlen(command_format) + 1 + 2 * strlen(filename)];
   command[sizeof(command) - 1] = 0;
   const size_t command_size =
@@ -3829,7 +3828,8 @@ static int read_image(struct iio_image *x, const char *fname) {
     char cmd[FILENAME_MAX];
     cmd[sizeof(cmd) - 1] = 0;
     fill_temporary_filename(tfn);
-    snprintf(cmd, FILENAME_MAX, "wget %s -q -O %s", fname, tfn);
+    char cmd_format[] = "wget %s -q -O %s";
+    snprintf(cmd, FILENAME_MAX, cmd_format, fname, tfn);
     int rsys = system(cmd);
     if (rsys != 0) fail("system wget returned %d", rsys);
     FILE *f = xfopen(tfn, "r");

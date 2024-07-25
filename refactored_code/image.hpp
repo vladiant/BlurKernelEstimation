@@ -67,19 +67,6 @@ class img_t {
     this->data.assign(data, data + w * h * d);
   }
 
-  img_t(const img_t<T>& o)
-      : w(o.w),
-        h(o.h),
-        d(o.d),
-        size(w * h * d),
-        data(w * d * h),
-        forwardplan(0),
-        backwardplan(0),
-        forwardplanf(0),
-        backwardplanf(0) {
-    copy(o);
-  }
-
   ~img_t() {
     if (forwardplan)
 #pragma omp critical(fftw)

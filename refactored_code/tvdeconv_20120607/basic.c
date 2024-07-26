@@ -19,7 +19,7 @@
 
 /** @brief malloc with an error message on failure. */
 void *MallocWithErrorMessage(size_t Size) {
-  void *Ptr;
+  void *Ptr = NULL;
 
   if (!(Ptr = malloc(Size)))
     ErrorMessage("Memory allocation of %u bytes failed.\n", Size);
@@ -29,7 +29,7 @@ void *MallocWithErrorMessage(size_t Size) {
 
 /** @brief realloc with an error message and free on failure. */
 void *ReallocWithErrorMessage(void *Ptr, size_t Size) {
-  void *NewPtr;
+  void *NewPtr = NULL;
 
   if (!(NewPtr = realloc(Ptr, Size))) {
     ErrorMessage("Memory reallocation of %u bytes failed.\n", Size);

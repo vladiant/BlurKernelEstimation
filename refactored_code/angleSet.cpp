@@ -19,7 +19,7 @@ static void computeProjectionHalfAngleSet(std::vector<angle_t>& angles,
       // such that (x,y) = (i*x',i*y'), thus we would have the same angle twice
       if (gcd(x, y) != 1) continue;
 
-      angle_t angle;
+      angle_t angle{};
       angle.angle = std::atan2(y, x);
       angle.x = x;
       angle.y = y;

@@ -103,8 +103,8 @@ int TvRestore(num *u, const num *f, int Width, int Height, int NumChannels,
   tvregsolver S;
   usolver USolveFun = NULL;
   zsolver ZSolveFun = NULL;
-  num DiffNorm;
-  int i, Success = 0, DeconvFlag, DctFlag, Iter;
+  num DiffNorm = NAN;
+  int i = 0, Success = 0, DeconvFlag = 0, DctFlag = 0, Iter = 0;
 
   if (!u || !f || u == f || Width < 2 || Height < 2 || NumChannels <= 0)
     return 0;
@@ -208,8 +208,8 @@ int TvRestore(num *u, const num *f, int Width, int Height, int NumChannels,
           !InitDeconvDct(&S))
         goto Catch;
     } else { /* Prepare for Fourier-based deconvolution */
-      long NumTransPixels, NumTransEl, PadNumEl;
-      int TransWidth;
+      long NumTransPixels = 0, NumTransEl = 0, PadNumEl = 0;
+      int TransWidth = 0;
 
       S.PadWidth = 2 * Width;
       S.PadHeight = 2 * Height;
@@ -316,7 +316,7 @@ Catch:
 
 /** @brief Test if Kernel is whole-sample symmetric */
 static int IsSymmetric(const num *Kernel, int KernelWidth, int KernelHeight) {
-  int x, xr, y, yr;
+  int x = 0, xr = 0, y = 0, yr = 0;
 
   if (KernelWidth % 2 == 0 || KernelHeight % 2 == 0) return 0;
 

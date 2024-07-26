@@ -1,6 +1,6 @@
-#include <math.h>
-#include <stdio.h>
-#include <stdlib.h>
+#include <cmath>
+#include <cstdio>
+#include <cstdlib>
 
 #include "angleSet.hpp"
 #include "image.hpp"
@@ -39,8 +39,8 @@ void projectImage(img_t<T>& projections, const img_t<T>& u_x,
       }
 
       // compute the shearing factor and orientation
-      double factor;
-      bool horizontalShear;
+      double factor = NAN;
+      bool horizontalShear = 0;
       double cos = std::cos(angleSet[a].angle);
       double sin = std::sin(angleSet[a].angle);
       if (angleSet[a].angle >= -M_PI / 4 && angleSet[a].angle <= M_PI / 4) {
@@ -117,8 +117,8 @@ void projectImage(img_t<T>& projections, const img_t<T>& u,
       }
 
       // compute the shearing factor and orientation
-      double factor;
-      bool horizontalShear;
+      double factor = NAN;
+      bool horizontalShear = 0;
       if (angleSet[a].angle >= -M_PI / 4 && angleSet[a].angle <= M_PI / 4) {
         factor = std::tan(angleSet[a].angle);
         horizontalShear = true;

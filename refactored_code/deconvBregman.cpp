@@ -218,7 +218,7 @@ void deconvBregman(img_t<T>& u, const img_t<T>& f, const img_t<T>& K,
   TvRegSetGamma1(tv, beta);
   TvRegSetTol(tv, .000001);
 
-  TvRegSetPlotFun(tv, 0, 0);
+  TvRegSetPlotFun(tv, nullptr, nullptr);
   TvRestore(&deconv_planar[0], &f_planar[0], f_planar.w, f_planar.h, f_planar.d,
             tv);
 

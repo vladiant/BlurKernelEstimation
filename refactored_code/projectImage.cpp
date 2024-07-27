@@ -40,7 +40,7 @@ void projectImage(img_t<T>& projections, const img_t<T>& u_x,
 
       // compute the shearing factor and orientation
       double factor = NAN;
-      bool horizontalShear = 0;
+      bool horizontalShear = false;
       double cos = std::cos(angleSet[a].angle);
       double sin = std::sin(angleSet[a].angle);
       if (angleSet[a].angle >= -M_PI / 4 && angleSet[a].angle <= M_PI / 4) {
@@ -118,7 +118,7 @@ void projectImage(img_t<T>& projections, const img_t<T>& u,
 
       // compute the shearing factor and orientation
       double factor = NAN;
-      bool horizontalShear = 0;
+      bool horizontalShear = false;
       if (angleSet[a].angle >= -M_PI / 4 && angleSet[a].angle <= M_PI / 4) {
         factor = std::tan(angleSet[a].angle);
         horizontalShear = true;

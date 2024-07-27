@@ -17,39 +17,55 @@ static options parse_args(int argc, char** argv) {
       "Recovering the blur kernel from natural image statistics: An analysis "
       "of the Goldstein-Fattal method");
   args::HelpFlag help(parser, "help", "Display this help menu", {'h', "help"});
-  args::ValueFlag<flt> compensationFactor(parser, "alpha",
+  args::ValueFlag<flt> compensationFactor{parser,
+                                          "alpha",
                                           "factor of the compensation filter",
-                                          {'a', "alpha"}, 2.1);
-  args::ValueFlag<int> seed(parser, "seed",
-                            "set the seed to a predefined value", {"seed"}, -1);
-  args::ValueFlag<flt> finalDeconvolutionWeight(
-      parser, "lambda", "regularization weight for the final deconvolution",
-      {'l', "lambda"}, flt(3000));
-  args::ValueFlag<flt> intermediateDeconvolutionWeight(
-      parser, "lambda2", "regularization weight for the kernel evaluation",
-      {"lambda2"}, flt(3000));
-  args::ValueFlag<int> Nouter(parser, "Nouter",
+                                          {'a', "alpha"},
+                                          2.1};
+  args::ValueFlag<int> seed{
+      parser, "seed", "set the seed to a predefined value", {"seed"}, -1};
+  args::ValueFlag<flt> finalDeconvolutionWeight{
+      parser,
+      "lambda",
+      "regularization weight for the final deconvolution",
+      {'l', "lambda"},
+      flt(3000)};
+  args::ValueFlag<flt> intermediateDeconvolutionWeight{
+      parser,
+      "lambda2",
+      "regularization weight for the kernel evaluation",
+      {"lambda2"},
+      flt(3000)};
+  args::ValueFlag<int> Nouter{parser,
+                              "Nouter",
                               "number of iterations of the support",
-                              {'i', "Nouter"}, 3);
-  args::ValueFlag<int> Ninner(parser, "Ninner",
+                              {'i', "Nouter"},
+                              3};
+  args::ValueFlag<int> Ninner{parser,
+                              "Ninner",
                               "number of iterations of the phase retrieval",
-                              {'p', "Ninner"}, 300);
-  args::ValueFlag<int> Ntries(parser, "Ntries",
+                              {'p', "Ninner"},
+                              300};
+  args::ValueFlag<int> Ntries{parser,
+                              "Ntries",
                               "number of tries of the phase retrieval",
-                              {'t', "Ntries"}, 30);
-  args::ValueFlag<bool> medianFilter(
-      parser, "medianFilter",
-      "apply the median filtering to the autocorrelations", {'m', "median"},
-      true);
-  args::Positional<std::string> input(
-      parser, "input", "input blurry image file", args::Options::Required);
-  args::Positional<int> kernelSize(parser, "kernelSize",
+                              {'t', "Ntries"},
+                              30};
+  args::ValueFlag<bool> medianFilter{
+      parser,
+      "medianFilter",
+      "apply the median filtering to the autocorrelations",
+      {'m', "median"},
+      true};
+  args::Positional<std::string> input{
+      parser, "input", "input blurry image file", args::Options::Required};
+  args::Positional<int> kernelSize{parser, "kernelSize",
                                    "kernel size (should be odd)",
-                                   args::Options::Required);
-  args::Positional<std::string> out_kernel(
-      parser, "out_kernel", "kernel output file", args::Options::Required);
-  args::Positional<std::string> out_deconv(
-      parser, "out_deconv", "deconv output file", args::Options::Required);
+                                   args::Options::Required};
+  args::Positional<std::string> out_kernel{
+      parser, "out_kernel", "kernel output file", args::Options::Required};
+  args::Positional<std::string> out_deconv{
+      parser, "out_deconv", "deconv output file", args::Options::Required};
 
   try {
     parser.ParseCLI(argc, argv);
@@ -71,7 +87,7 @@ static options parse_args(int argc, char** argv) {
     exit(1);
   }
 
-  options opts;
+  options opts{};
   opts.Ninner = args::get(Ninner);
   opts.Nouter = args::get(Nouter);
   opts.Ntries = args::get(Ntries);
@@ -102,11 +118,11 @@ int main(int argc, char** argv) {
   if (opts.seed != -1) {
     srand(opts.seed);
   } else {
-    srand(time(0));
+    srand(time(nullptr));
   }
 
   // read the input image
-  int w, h, d;
+  int w = 0, h = 0, d = 0;
   flt* data = iio_read_image<flt>(opts.input, &w, &h, &d);
   img_t<flt> img(w, h, d, data);
   free(data);

@@ -390,7 +390,7 @@ static void fill_temporary_filename(char *out) {
   static char buf[L_tmpnam + 1];
   char *tfn = tmpnam(buf);
 #endif  // I_CAN_HAS_MKSTEMP
-  strncpy(out, tfn, FILENAME_MAX);
+  strncpy(out, tfn, FILENAME_MAX - 1);
 }
 
 // struct iio_image { ... };                                                {{{1
@@ -1401,6 +1401,7 @@ static void *load_rest_of_file(long *on, FILE *f, void *buf, size_t bufn) {
 // Implementation: re-invent the wheel
 static char *put_data_into_temporary_file(void *filedata, size_t filesize) {
   static char filename[FILENAME_MAX];
+  filename[sizeof(filename) - 1] = 0;
   fill_temporary_filename(filename);
   FILE *f = xfopen(filename, "w");
   int cx = fwrite(filedata, filesize, 1, f);
@@ -3286,6 +3287,7 @@ static void iio_write_image_as_tiff_smarter(const char *filename,
   }
   if (0 == strcmp(filename, "-")) {
     char tfn[FILENAME_MAX];
+    tfn[sizeof(tfn) - 1] = 0;
     fill_temporary_filename(tfn);
     iio_write_image_as_tiff(tfn, x);
     FILE *f = xfopen(tfn, "r");

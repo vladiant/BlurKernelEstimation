@@ -1,5 +1,4 @@
-#ifndef CALC_ANGLES_H
-#define CALC_ANGLES_H
+#pragma once
 
 #include <vector>
 
@@ -11,5 +10,3 @@ struct angle_t {
 };
 
 void computeProjectionAngleSet(std::vector<angle_t>& angles, int kernelSize);
-
-#endif

@@ -11,8 +11,7 @@
  * should have received a copy of this license along this program. If
  * not, see <http://www.opensource.org/licenses/bsd-license.html>.
  */
-#ifndef _UTIL_DECONV_H_
-#define _UTIL_DECONV_H_
+#pragma once
 
 #include "tvregopt.h"
 
@@ -151,5 +150,3 @@ inline int PeriodicExtension(int N, int i) {
       return i;
   }
 }
-
-#endif /* _UTIL_DECONV_H_ */

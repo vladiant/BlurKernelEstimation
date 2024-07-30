@@ -26,8 +26,7 @@
  * The important stuff is done inside the args namespace
  */
 
-#ifndef ARGS_HXX
-#define ARGS_HXX
+#pragma once
 
 #include <algorithm>
 #include <iterator>
@@ -4171,4 +4170,3 @@ namespace args
     };
 }
 
-#endif

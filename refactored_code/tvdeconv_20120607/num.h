@@ -14,8 +14,7 @@
  * should have received a copy of this license along this program. If
  * not, see <http://www.opensource.org/licenses/bsd-license.html>.
  */
-#ifndef _NUM_H_
-#define _NUM_H_
+#pragma once
 
 #ifdef NUM_SINGLE
 /* Use single-precision datatype */
@@ -24,5 +23,3 @@ typedef float num;
 /* Use double-precision datatype */
 typedef double num;
 #endif
-
-#endif /* _NUM_H_ */

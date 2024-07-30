@@ -1,5 +1,4 @@
-#ifndef CALC_AC_PROJECTIONS_H
-#define CALC_AC_PROJECTIONS_H
+#pragma once
 
 #include "angleSet.hpp"
 #include "image.hpp"
@@ -10,6 +9,5 @@ void computeProjectionsAutocorrelation(img_t<T>& acProjections,
                                        const std::vector<angle_t>& angleSet,
                                        int psSize, T compensationFactor);
 
+// TODO: Fix
 #include "computeProjectionsAutocorrelation.cpp"
-
-#endif

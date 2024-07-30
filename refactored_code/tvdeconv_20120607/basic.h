@@ -47,8 +47,7 @@
  * not, see <http://www.opensource.org/licenses/bsd-license.html>.
  */
 
-#ifndef _BASIC_H_
-#define _BASIC_H_
+#pragma once
 
 #include <math.h>
 #include <stdio.h>
@@ -162,5 +161,3 @@ void ErrorMessage(const char *Format, ...);
 
 /* Timer function */
 unsigned long Clock();
-
-#endif /* _BASIC_H_ */

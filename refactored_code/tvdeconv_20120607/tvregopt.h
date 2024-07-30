@@ -11,8 +11,7 @@
  * should have received a copy of this license along this program. If
  * not, see <http://www.opensource.org/licenses/bsd-license.html>.
  */
-#ifndef _TVREGOPT_H_
-#define _TVREGOPT_H_
+#pragma once
 
 #if defined(TVREG_NONGAUSSIAN) || \
     (defined(TVREG_INPAINT) && defined(TVREG_DECONV))
@@ -461,5 +460,3 @@ const char *TvRegGetAlgorithm(const tvregopt *Opt) {
           (!DeconvFlag) ? "Gauss-Seidel" : ((DctFlag) ? "DCT" : "Fourier"));
   return Opt->AlgString;
 }
-
-#endif /* _TVREGOPT_H_ */

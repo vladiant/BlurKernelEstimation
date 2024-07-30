@@ -11,8 +11,7 @@
  * should have received a copy of this license along this program. If
  * not, see <http://www.opensource.org/licenses/bsd-license.html>.
  */
-#ifndef _TVREG_H_
-#define _TVREG_H_
+#pragma once
 
 #include "basic.h"
 #include "num.h"
@@ -58,5 +57,3 @@ int TvRestoreSimplePlot(int State, int Iter, num Delta,
                         ATTRIBUTE_UNUSED int Width, ATTRIBUTE_UNUSED int Height,
                         ATTRIBUTE_UNUSED int NumChannels,
                         ATTRIBUTE_UNUSED void *Param);
-
-#endif /* _TVREG_H_ */

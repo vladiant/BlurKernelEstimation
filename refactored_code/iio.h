@@ -1,5 +1,4 @@
-#ifndef IIO_H
-#define IIO_H
+#pragma once
 
 #include <stdbool.h>  // for bool
 #include <stdint.h>   // for uint8_t
@@ -208,5 +207,3 @@ void iio_save_image_uint8_matrix(char *f, unsigned char **x, int w, int h);
 
 // convenience wrapper for free (to avoid need to inlcude stdlib.h)
 void iio_free(void *);
-
-#endif  // IIO_H

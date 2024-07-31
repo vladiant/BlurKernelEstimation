@@ -32,7 +32,6 @@ add_executable(
     angleSet.cpp
     angleSet.hpp
     args.hxx
-    computeProjectionsAutocorrelation.cpp
     computeProjectionsAutocorrelation.hpp
     conjugate_gradient.hpp
     deconvBregman.cpp

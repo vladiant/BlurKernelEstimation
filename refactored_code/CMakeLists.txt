@@ -34,7 +34,6 @@ add_executable(
     args.hxx
     computeProjectionsAutocorrelation.hpp
     conjugate_gradient.hpp
-    deconvBregman.cpp
     deconvBregman.hpp
     estimateKernel.cpp
     estimateKernel.hpp

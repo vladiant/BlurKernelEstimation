@@ -43,7 +43,6 @@ add_executable(
     iio.hpp
     image.hpp
     options.hpp
-    phaseRetrieval.cpp
     phaseRetrieval.hpp
     projectImage.cpp
     projectImage.hpp

@@ -258,7 +258,6 @@ static void initialSupportEstimation(std::vector<int>& support,
   }
 }
 
-
 /// estimate the kernel from a blurred image and a kernel size
 /// Algorithm 1 of the paper
 template <typename T>
@@ -307,4 +306,3 @@ void estimateKernel(img_t<T>& kernel, const img_t<T>& img, int kernelSize,
     reestimateKernelSupport(support, kernel, angleSet, acRadius);
   }
 }
-

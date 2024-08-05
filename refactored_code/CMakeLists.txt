@@ -44,7 +44,6 @@ add_executable(
     options.hpp
     phaseRetrieval.hpp
     projectImage.hpp
-    reconstructPowerspectrum.cpp
     reconstructPowerspectrum.hpp
     main.cpp
 )

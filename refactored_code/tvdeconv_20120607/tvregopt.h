@@ -13,14 +13,12 @@
  */
 #pragma once
 
-#if defined(TVREG_NONGAUSSIAN) || \
-    (defined(TVREG_INPAINT) && defined(TVREG_DECONV))
+#if defined(TVREG_NONGAUSSIAN) || defined(TVREG_INPAINT)
 #define TVREG_USEZ
 #endif
 
-#ifdef TVREG_DECONV
 #include <fftw3.h>
-#endif
+
 #include "tvreg.h"
 
 /** @brief Size of the string buffer for holding the algorithm description */
@@ -107,7 +105,6 @@ typedef struct tag_tvregsolver {
   num *ztilde; /**< Bregman variable for z constraint  */
 #endif
 
-#ifdef TVREG_DECONV
   num *A, *B;              /**< Spatial FFTW buffers               */
   num *ATrans, *BTrans;    /**< Spectral FFTW buffers              */
   num *DenomTrans;         /**< Precomputation for u subproblem    */
@@ -116,7 +113,6 @@ typedef struct tag_tvregsolver {
   FFT(plan) TransformB;    /**< Forward transform plan B -> BTrans */
   FFT(plan) InvTransformA; /**< Inverse transform plan ATrans -> A */
   FFT(plan) InvTransformB; /**< Inverse transform plan BTrans -> B */
-#endif
 } tvregsolver;
 
 typedef num (*usolver)(tvregsolver *);

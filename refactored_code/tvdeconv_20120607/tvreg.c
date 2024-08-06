@@ -26,10 +26,11 @@
 #if defined(TVREG_DENOISE) || defined(TVREG_INPAINT)
 #include "usolve_gs_inc.c"
 #endif
-#ifdef TVREG_DECONV
+
+// TODO: Fix
 #include "usolve_dct_inc.c"
 #include "usolve_dft_inc.c"
-#endif
+
 #ifdef TVREG_USEZ
 #include "zsolve_inc.c"
 #endif
@@ -149,10 +150,9 @@ int TvRestore(num *u, const num *f, int Width, int Height, int NumChannels,
 #ifdef TVREG_USEZ
   S.z = S.ztilde = NULL;
 #endif
-#ifdef TVREG_DECONV
+
   S.A = S.B = S.ATrans = S.BTrans = S.KernelTrans = S.DenomTrans = NULL;
   S.TransformA = S.TransformB = S.InvTransformA = S.InvTransformB = NULL;
-#endif
 
   if (!(S.d = (numvec2 *)Malloc(sizeof(numvec2) * NumEl)) ||
       !(S.dtilde = (numvec2 *)Malloc(sizeof(numvec2) * NumEl)))
@@ -187,14 +187,7 @@ int TvRestore(num *u, const num *f, int Width, int Height, int NumChannels,
   if (!DeconvFlag)
     S.Ku = u;
   else
-#ifndef TVREG_DECONV
-  { /* We need deconvolution but do not have it, show error message. */
-    fprintf(stderr,
-            "Please recompile with TVREG_DECONV "
-            "for deconvolution problems.\n");
-    goto Catch;
-  }
-#else /* The following applies only for problems with deconvolution */
+    /* The following applies only for problems with deconvolution */
     if (DctFlag) { /* Prepare for DCT-based deconvolution */
       long PadNumPixels = ((long)Width + 1) * ((long)Height + 1);
 
@@ -228,7 +221,6 @@ int TvRestore(num *u, const num *f, int Width, int Height, int NumChannels,
           !InitDeconvFourier(&S))
         goto Catch;
     }
-#endif
 
   /*** Algorithm initializations *****************************************/
 
@@ -290,7 +282,7 @@ Catch:
   if (S.ztilde) Free(S.ztilde);
   if (S.z) Free(S.z);
 #endif
-#ifdef TVREG_DECONV
+
   if (DeconvFlag) {
     if (S.DenomTrans) Free(S.DenomTrans);
     if (S.KernelTrans) FFT(free)(S.KernelTrans);
@@ -310,7 +302,6 @@ Catch:
     }
     /*FFT(cleanup)();*/
   }
-#endif
   return Success;
 }
 
@@ -377,13 +368,13 @@ static int TvRestoreChooseAlgorithm(int *UseZ, int *DeconvFlag, int *DctFlag,
 #else
     *USolveFun = NULL;
 #endif
-#ifdef TVREG_DECONV
+
 #ifdef TVREG_USEZ
   else if (*UseZ)
     *USolveFun = (*DctFlag) ? UDeconvDctZ : UDeconvFourierZ;
 #endif
   else
     *USolveFun = (*DctFlag) ? UDeconvDct : UDeconvFourier;
-#endif
+
   return 1;
 }

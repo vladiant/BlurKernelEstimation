@@ -83,9 +83,6 @@ if(FFTW3_THREAD_LIBRARY)
     add_compile_definitions(FFTW_HAS_THREADS)
 endif()
 
-# Required for tvdeconv_20120607
-add_compile_definitions(TVREG_DECONV=1)
-
 target_link_libraries(
    ${PROJECT_NAME}
    PRIVATE

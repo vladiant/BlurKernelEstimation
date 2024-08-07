@@ -13,7 +13,7 @@
  */
 #pragma once
 
-#if defined(TVREG_NONGAUSSIAN) || defined(TVREG_INPAINT)
+#if defined(TVREG_INPAINT)
 #define TVREG_USEZ
 #endif
 

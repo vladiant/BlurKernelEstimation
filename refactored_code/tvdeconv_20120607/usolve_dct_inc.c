@@ -209,7 +209,7 @@ static num UDeconvDct(tvregsolver *S) {
   return UUpdate(S);
 }
 
-#if defined(TVREG_USEZ) || defined(DOXYGEN)
+#if defined(DOXYGEN)
 /**
  * @brief Solve the u subproblem using DCT transforms (UseZ = 1)
  * @param S tvreg solver state

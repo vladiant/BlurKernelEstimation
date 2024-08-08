@@ -31,10 +31,6 @@
 #include "usolve_dct_inc.c"
 #include "usolve_dft_inc.c"
 
-#ifdef TVREG_USEZ
-#include "zsolve_inc.c"
-#endif
-
 /**
  * @brief Total variation based image restoration
  * @param u initial guess, overwritten with restored image
@@ -147,9 +143,6 @@ int TvRestore(num *u, const num *f, int Width, int Height, int NumChannels,
 
   /*** Allocate memory ***************************************************/
   S.d = S.dtilde = NULL;
-#ifdef TVREG_USEZ
-  S.z = S.ztilde = NULL;
-#endif
 
   S.A = S.B = S.ATrans = S.BTrans = S.KernelTrans = S.DenomTrans = NULL;
   S.TransformA = S.TransformB = S.InvTransformA = S.InvTransformB = NULL;
@@ -159,7 +152,7 @@ int TvRestore(num *u, const num *f, int Width, int Height, int NumChannels,
     goto Catch;
 
   if (S.UseZ)
-#ifndef TVREG_USEZ
+
   { /* We need z but do not have it, show error message. */
     if (S.Opt.NoiseModel != NOISEMODEL_L2)
       fprintf(stderr,
@@ -172,17 +165,6 @@ int TvRestore(num *u, const num *f, int Width, int Height, int NumChannels,
 
     goto Catch;
   }
-#else
-  { /* Allocate memory for z and ztilde */
-    if (!(S.z = (num *)Malloc(sizeof(num) * NumEl)) ||
-        !(S.ztilde = (num *)Malloc(sizeof(num) * NumEl)))
-      goto Catch;
-
-    /* Initialize z = ztilde = u */
-    memcpy(S.z, S.u, sizeof(num) * NumEl);
-    memcpy(S.ztilde, S.u, sizeof(num) * NumEl);
-  }
-#endif
 
   if (!DeconvFlag)
     S.Ku = u;
@@ -258,11 +240,6 @@ int TvRestore(num *u, const num *f, int Width, int Height, int NumChannels,
 
     if (Iter >= 2 + S.UseZ && DiffNorm < S.Opt.Tol) break;
 
-#ifdef TVREG_USEZ
-    /* Solve z subproblem and update ztilde */
-    if (S.UseZ) ZSolveFun(&S);
-#endif
-
     if (S.Opt.PlotFun && !(S.Opt.PlotFun(0, Iter, DiffNorm, u, Width, Height,
                                          NumChannels, S.Opt.PlotParam)))
       goto Catch;
@@ -278,10 +255,6 @@ Catch:
   /*** Release memory ****************************************************/
   if (S.dtilde) Free(S.dtilde);
   if (S.d) Free(S.d);
-#ifdef TVREG_USEZ
-  if (S.ztilde) Free(S.ztilde);
-  if (S.z) Free(S.z);
-#endif
 
   if (DeconvFlag) {
     if (S.DenomTrans) Free(S.DenomTrans);
@@ -330,23 +303,7 @@ static int TvRestoreChooseAlgorithm(int *UseZ, int *DeconvFlag, int *DctFlag,
      of the problem.  ZSolveFun selects the z-subproblem solver. */
   *UseZ = (Opt->NoiseModel != NOISEMODEL_L2);
 
-#ifndef TVREG_USEZ
   *ZSolveFun = NULL;
-#else
-  switch (Opt->NoiseModel) {
-    case NOISEMODEL_L2:
-      *ZSolveFun = ZSolveL2;
-      break;
-    case NOISEMODEL_L1:
-      *ZSolveFun = ZSolveL1;
-      break;
-    case NOISEMODEL_POISSON:
-      *ZSolveFun = ZSolvePoisson;
-      break;
-    default:
-      return 0;
-  }
-#endif
 
   /* If there is a kernel, set DeconvFlag */
   if (Opt->Kernel) {
@@ -369,10 +326,6 @@ static int TvRestoreChooseAlgorithm(int *UseZ, int *DeconvFlag, int *DctFlag,
     *USolveFun = NULL;
 #endif
 
-#ifdef TVREG_USEZ
-  else if (*UseZ)
-    *USolveFun = (*DctFlag) ? UDeconvDctZ : UDeconvFourierZ;
-#endif
   else
     *USolveFun = (*DctFlag) ? UDeconvDct : UDeconvFourier;
 

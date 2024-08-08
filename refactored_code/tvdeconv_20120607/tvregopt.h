@@ -14,7 +14,7 @@
 #pragma once
 
 #if defined(TVREG_INPAINT)
-#define TVREG_USEZ
+
 #endif
 
 #include <fftw3.h>
@@ -99,11 +99,6 @@ typedef struct tag_tvregsolver {
   int NumChannels; /**< Number of image channels           */
   tvregopt Opt;    /**< Solver options                     */
   int UseZ;        /**< True if selected algorithm uses z  */
-
-#ifdef TVREG_USEZ
-  num *z;      /**< Current solution of z              */
-  num *ztilde; /**< Bregman variable for z constraint  */
-#endif
 
   num *A, *B;              /**< Spatial FFTW buffers               */
   num *ATrans, *BTrans;    /**< Spectral FFTW buffers              */

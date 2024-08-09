@@ -13,10 +13,6 @@
  */
 #pragma once
 
-#if defined(TVREG_INPAINT)
-
-#endif
-
 #include <fftw3.h>
 
 #include "tvreg.h"

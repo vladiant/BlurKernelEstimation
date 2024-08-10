@@ -23,9 +23,6 @@
 // #endif
 
 #include "dsolve_inc.c"
-#if defined(TVREG_DENOISE)
-#include "usolve_gs_inc.c"
-#endif
 
 // TODO: Fix
 #include "usolve_dct_inc.c"
@@ -113,7 +110,6 @@ int TvRestore(num *u, const num *f, int Width, int Height, int NumChannels,
                                 &ZSolveFun, &S.Opt))
     return 0;
 
-#if !defined(TVREG_DENOISE)
   if (!DeconvFlag) {
     if (!S.Opt.VaryingLambda)
       fprintf(stderr,
@@ -125,7 +121,6 @@ int TvRestore(num *u, const num *f, int Width, int Height, int NumChannels,
               "for inpainting problems.\n");
     return 0;
   }
-#endif
 
   if (S.Opt.VaryingLambda &&
       (S.Opt.LambdaWidth != Width || S.Opt.LambdaHeight != Height)) {
@@ -319,13 +314,7 @@ static int TvRestoreChooseAlgorithm(int *UseZ, int *DeconvFlag, int *DctFlag,
 
   /* Select the u-subproblem solver */
   if (!*DeconvFlag) /* Gauss-Seidel solver for denoising and inpainting */
-#if defined(TVREG_DENOISE)
-    *USolveFun = (!Opt->VaryingLambda) ? UGaussSeidelConstantLambda
-                                       : UGaussSeidelVaryingLambda;
-#else
     *USolveFun = NULL;
-#endif
-
   else
     *USolveFun = (*DctFlag) ? UDeconvDct : UDeconvFourier;
 

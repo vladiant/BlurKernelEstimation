@@ -16,13 +16,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "tvregopt.h"
-
-// #ifdef MATLAB_MEX_FILE
-// #include "tvregmex.h"
-// #endif
-
 #include "dsolve_inc.c"
+#include "tvregopt.h"
 
 // TODO: Fix
 #include "usolve_dct_inc.c"

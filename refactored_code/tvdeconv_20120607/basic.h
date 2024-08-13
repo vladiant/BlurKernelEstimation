@@ -53,11 +53,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#ifdef MATLAB_MEX_FILE
-#include "mex.h"
-#define Malloc(s) mxMalloc(s)
-#define Free(p) mxFree(p)
-#else
 /* Memory management */
 /** @brief Function to allocate a block of memory */
 #define Malloc(s) MallocWithErrorMessage(s)
@@ -67,7 +62,6 @@ void *MallocWithErrorMessage(size_t Size);
 void *ReallocWithErrorMessage(void *Ptr, size_t Size);
 /** @brief Function to free memory */
 #define Free(p) free(p)
-#endif
 
 /* Portable integer types */
 #if defined(WIN32) || defined(_WIN32) || defined(WIN64) || defined(_WIN64)

@@ -1,12 +1,8 @@
 #pragma once
 
-#include <limits>
-
-#ifdef MATLAB_MEX_FILE
-#include <mex.h>
-#else
 #include <fftw3.h>
-#endif
+
+#include <limits>
 
 template <class T>
 class fftw_alloc {
@@ -42,11 +38,8 @@ class fftw_alloc {
 #ifdef _OPENMP
 #pragma omp critical(fftw)
 #endif
-#ifdef MATLAB_MEX_FILE
-    ptr = mxMalloc(num * sizeof(T));
-#else
+
     ptr = fftw_malloc(num * sizeof(T));
-#endif
     return (pointer)ptr;
   }
 
@@ -59,11 +52,7 @@ class fftw_alloc {
 #ifdef _OPENMP
 #pragma omp critical(fftw)
 #endif
-#ifdef MATLAB_MEX_FILE
-    if (p) mxFree(p);
-#else
     fftw_free(p);
-#endif
   }
 };
 

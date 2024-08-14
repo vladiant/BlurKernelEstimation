@@ -6,6 +6,7 @@
 
 extern "C" {
 #include "tvdeconv_20120607/tvreg.h"
+#include "tvdeconv_20120607/tvregopt.h"
 }
 
 /// pad an image using constant boundaries

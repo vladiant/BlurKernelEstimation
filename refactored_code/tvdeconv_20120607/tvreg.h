@@ -29,31 +29,45 @@
 
 /* tvregopt is encapsulated by forward declaration */
 typedef struct tag_tvregopt tvregopt;
+typedef struct tag_tvregsolver tvregsolver;
+typedef num (*usolver)(tvregsolver *);
+typedef void (*zsolver)(tvregsolver *);
 
 int TvRestore(num *u, const num *f, int Width, int Height, int NumChannels,
               tvregopt *Opt);
 
-tvregopt *TvRegNewOpt();
-void TvRegFreeOpt(tvregopt *Opt);
-void TvRegSetLambda(tvregopt *Opt, num Lambda);
-void TvRegSetVaryingLambda(tvregopt *Opt, const num *VaryingLambda,
-                           int LambdaWidth, int LambdaHeight);
-void TvRegSetKernel(tvregopt *Opt, const num *Kernel, int KernelWidth,
-                    int KernelHeight);
-void TvRegSetTol(tvregopt *Opt, num Tol);
-void TvRegSetGamma1(tvregopt *Opt, num Gamma1);
-void TvRegSetGamma2(tvregopt *Opt, num Gamma2);
-void TvRegSetMaxIter(tvregopt *Opt, int MaxIter);
-int TvRegSetNoiseModel(tvregopt *Opt, const char *NoiseModel);
-void TvRegSetPlotFun(tvregopt *Opt,
-                     int (*PlotFun)(int, int, num, const num *, int, int, int,
-                                    void *),
-                     void *PlotParam);
-void TvRegPrintOpt(const tvregopt *Opt);
-const char *TvRegGetAlgorithm(const tvregopt *Opt);
+/** @brief Algorithm planning function */
+int TvRestoreChooseAlgorithm(int *UseZ, int *DeconvFlag, int *DctFlag,
+                             usolver *USolveFun, zsolver *ZSolveFun,
+                             const tvregopt *Opt);
 
-int TvRestoreSimplePlot(int State, int Iter, num Delta,
-                        ATTRIBUTE_UNUSED const num *u,
-                        ATTRIBUTE_UNUSED int Width, ATTRIBUTE_UNUSED int Height,
-                        ATTRIBUTE_UNUSED int NumChannels,
-                        ATTRIBUTE_UNUSED void *Param);
+/**
+ * @brief Solve the d subproblem with vectorial shrinkage
+ * @param S tvreg solver state
+ *
+ * This routine solves the d subproblem to update d,
+ * \f[ \operatorname*{arg\,min}_{d}\,\sum_{i,j}\lvert d_{i,j}\rvert+\frac{
+ * \gamma}{2}\sum_{i,j}\lvert d_{i,j}-b_{i,j}-\nabla u_{i,j}\rvert^2, \f]
+ * where \f$ \nabla \f$ is the discrete gradient and the second term is a
+ * penalty to encourage the constraint \f$ d = \nabla u \f$.  The solution is
+ * the vectorial shrinkage with shrinkage parameter \f$ 1/\gamma \f$,
+ * \f[ d_{i,j}=\frac{\nabla u_{i,j}+b_{i,j}}{\lvert\nabla u_{i,j}+b_{i,j}
+ * \rvert}\max\bigl\{\lvert\nabla u_{i,j}+b_{i,j}\rvert-1/\gamma,0\bigr\}. \f]
+ * The discrete gradient of u is computed with forward differences.  At the
+ * right and bottom boundaries, the difference is set to zero.
+ *
+ * The routine also updates the auxiliary variable b according to
+ * \f[ b = b + \nabla u - d. \f]
+ * Rather than representing b directly, we use  \f$ \tilde d = d - b \f$,
+ * which is algebraically equivalent but requires less arithmetic.
+ *
+ * To represent the vector field d, we implement d as a numvec2 array of
+ * size Width x Height x NumChannels such that
+@code
+    d[i + Width*(j + Height*k)].x = x-component at pixel (i,j) channel k,
+    d[i + Width*(j + Height*k)].y = y-component at pixel (i,j) channel k,
+@endcode
+ * where i = 0, ..., Width-1, j = 0, ..., Height-1, and k = 0, ...,
+ * NumChannels-1.  This structure is also used for \f$ \tilde d \f$.
+ */
+void DSolve(tvregsolver *S);

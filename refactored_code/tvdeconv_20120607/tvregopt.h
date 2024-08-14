@@ -14,6 +14,7 @@
 #pragma once
 
 #include <fftw3.h>
+#include <string.h>
 
 #include "tvreg.h"
 
@@ -86,15 +87,15 @@ typedef struct tag_tvregsolver {
   numvec2 *dtilde; /**< Bregman variable for d constraint  */
   num *Ku;         /**< Convolution of kernel with u       */
 
-  num fNorm;       /**< L2 norm of f                       */
-  num Alpha;       /**< Lambda/Gamma1 or Gamma2/Gamma1     */
-  int Width;       /**< Image width                        */
-  int Height;      /**< Image height                       */
-  int PadWidth;    /**< Padded image width                 */
-  int PadHeight;   /**< Padded image height                */
-  int NumChannels; /**< Number of image channels           */
-  tvregopt Opt;    /**< Solver options                     */
-  int UseZ;        /**< True if selected algorithm uses z  */
+  num fNorm;               /**< L2 norm of f                       */
+  num Alpha;               /**< Lambda/Gamma1 or Gamma2/Gamma1     */
+  int Width;               /**< Image width                        */
+  int Height;              /**< Image height                       */
+  int PadWidth;            /**< Padded image width                 */
+  int PadHeight;           /**< Padded image height                */
+  int NumChannels;         /**< Number of image channels           */
+  struct tag_tvregopt Opt; /**< Solver options                     */
+  int UseZ;                /**< True if selected algorithm uses z  */
 
   num *A, *B;              /**< Spatial FFTW buffers               */
   num *ATrans, *BTrans;    /**< Spectral FFTW buffers              */
@@ -109,35 +110,15 @@ typedef struct tag_tvregsolver {
 typedef num (*usolver)(tvregsolver *);
 typedef void (*zsolver)(tvregsolver *);
 
-/** @brief Default options struct */
-tvregopt TvRegDefaultOpt = {TVREGOPT_DEFAULT_LAMBDA,
-                            NULL,
-                            0,
-                            0,
-                            NULL,
-                            0,
-                            0,
-                            (num)(TVREGOPT_DEFAULT_TOL),
-                            TVREGOPT_DEFAULT_GAMMA1,
-                            TVREGOPT_DEFAULT_GAMMA2,
-                            TVREGOPT_DEFAULT_MAXITER,
-                            NOISEMODEL_L2,
-                            TvRestoreSimplePlot,
-                            NULL,
-                            NULL};
-
-static int TvRestoreChooseAlgorithm(int *UseZ, int *DeconvFlag, int *DctFlag,
-                                    usolver *USolveFun, zsolver *ZSolveFun,
-                                    const tvregopt *Opt);
-
 /* If GNU C language extensions are available, apply the "unused" attribute
    to avoid warnings.  TvRestoreSimplePlot is a plotting callback function
    for TvRestore, so the unused arguments are indeed required. */
-int TvRestoreSimplePlot(int State, int Iter, num Delta,
-                        ATTRIBUTE_UNUSED const num *u,
-                        ATTRIBUTE_UNUSED int Width, ATTRIBUTE_UNUSED int Height,
-                        ATTRIBUTE_UNUSED int NumChannels,
-                        ATTRIBUTE_UNUSED void *Param) {
+static int TvRestoreSimplePlot(int State, int Iter, num Delta,
+                               ATTRIBUTE_UNUSED const num *u,
+                               ATTRIBUTE_UNUSED int Width,
+                               ATTRIBUTE_UNUSED int Height,
+                               ATTRIBUTE_UNUSED int NumChannels,
+                               ATTRIBUTE_UNUSED void *Param) {
   switch (State) {
     case 0: /* TvRestore is running */
       /* We print to stderr so that messages are displayed on the console
@@ -157,6 +138,26 @@ int TvRestoreSimplePlot(int State, int Iter, num Delta,
   return 1;
 }
 
+/** @brief Default options struct */
+static tvregopt TvRegDefaultOpt = {TVREGOPT_DEFAULT_LAMBDA,
+                                   NULL,
+                                   0,
+                                   0,
+                                   NULL,
+                                   0,
+                                   0,
+                                   (num)(TVREGOPT_DEFAULT_TOL),
+                                   TVREGOPT_DEFAULT_GAMMA1,
+                                   TVREGOPT_DEFAULT_GAMMA2,
+                                   TVREGOPT_DEFAULT_MAXITER,
+                                   NOISEMODEL_L2,
+                                   TvRestoreSimplePlot,
+                                   NULL,
+                                   NULL};
+
+// TODO: Test replace static with inline
+// TODO: Remove unused functions
+
 /**
  * @brief Create a new tvregopt options object
  * @return tvregopt pointer, or NULL if out of memory
@@ -165,7 +166,7 @@ int TvRestoreSimplePlot(int State, int Iter, num Delta,
  * default values.  It is the caller's responsibility to call TvRegFreeOpt()
  * to free the tvregopt object when done.
  */
-tvregopt *TvRegNewOpt() {
+static tvregopt *TvRegNewOpt() {
   tvregopt *Opt;
 
   if ((Opt = (tvregopt *)Malloc(sizeof(tvregopt)))) *Opt = TvRegDefaultOpt;
@@ -182,7 +183,7 @@ tvregopt *TvRegNewOpt() {
  * @brief Free tvregopt options object
  * @param Opt tvregopt options object
  */
-void TvRegFreeOpt(tvregopt *Opt) {
+static void TvRegFreeOpt(tvregopt *Opt) {
   if (Opt) {
     if (Opt->AlgString) Free(Opt->AlgString);
     Free(Opt);
@@ -194,7 +195,7 @@ void TvRegFreeOpt(tvregopt *Opt) {
  * @param Opt tvregopt options object
  * @param Lambda fidelity weight (positive scalar)
  */
-void TvRegSetLambda(tvregopt *Opt, num Lambda) {
+static void TvRegSetLambda(tvregopt *Opt, num Lambda) {
   if (Opt) Opt->Lambda = Lambda;
 }
 
@@ -219,8 +220,8 @@ void TvRegSetLambda(tvregopt *Opt, num Lambda) {
  * Known pixels are denoised (and deconvolved, if a kernel is also set).  To
  * keep the known pixels (approximately) unchanged, set C to a large value.
  */
-void TvRegSetVaryingLambda(tvregopt *Opt, const num *VaryingLambda,
-                           int LambdaWidth, int LambdaHeight) {
+static void TvRegSetVaryingLambda(tvregopt *Opt, const num *VaryingLambda,
+                                  int LambdaWidth, int LambdaHeight) {
   if (Opt) {
     Opt->VaryingLambda = VaryingLambda;
     Opt->LambdaWidth = LambdaWidth;
@@ -239,8 +240,8 @@ void TvRegSetVaryingLambda(tvregopt *Opt, const num *VaryingLambda,
  *    Kernel[x + KernelWidth*y] = K(x,y).
  * If Kernel = NULL, then no deconvolution is performed.
  */
-void TvRegSetKernel(tvregopt *Opt, const num *Kernel, int KernelWidth,
-                    int KernelHeight) {
+static void TvRegSetKernel(tvregopt *Opt, const num *Kernel, int KernelWidth,
+                           int KernelHeight) {
   if (Opt) {
     Opt->Kernel = Kernel;
     Opt->KernelWidth = KernelWidth;
@@ -253,7 +254,7 @@ void TvRegSetKernel(tvregopt *Opt, const num *Kernel, int KernelWidth,
  * @param Opt tvregopt options object
  * @param Tol convergence tolerance (positive scalar)
  */
-void TvRegSetTol(tvregopt *Opt, num Tol) {
+static void TvRegSetTol(tvregopt *Opt, num Tol) {
   if (Opt) Opt->Tol = Tol;
 }
 
@@ -262,7 +263,7 @@ void TvRegSetTol(tvregopt *Opt, num Tol) {
  * @param Opt tvregopt options object
  * @param Gamma1 penalty (positive scalar)
  */
-void TvRegSetGamma1(tvregopt *Opt, num Gamma1) {
+static void TvRegSetGamma1(tvregopt *Opt, num Gamma1) {
   if (Opt) Opt->Gamma1 = Gamma1;
 }
 
@@ -271,7 +272,7 @@ void TvRegSetGamma1(tvregopt *Opt, num Gamma1) {
  * @param Opt tvregopt options object
  * @param Gamma1 penalty (positive scalar)
  */
-void TvRegSetGamma2(tvregopt *Opt, num Gamma2) {
+static void TvRegSetGamma2(tvregopt *Opt, num Gamma2) {
   if (Opt) Opt->Gamma2 = Gamma2;
 }
 
@@ -280,7 +281,7 @@ void TvRegSetGamma2(tvregopt *Opt, num Gamma2) {
  * @param Opt tvregopt options object
  * @param MaxIter maximum number of iterations
  */
-void TvRegSetMaxIter(tvregopt *Opt, int MaxIter) {
+static void TvRegSetMaxIter(tvregopt *Opt, int MaxIter) {
   if (Opt) Opt->MaxIter = MaxIter;
 }
 
@@ -300,7 +301,7 @@ void TvRegSetMaxIter(tvregopt *Opt, int MaxIter) {
  *   - 'Poisson'            Each pixel is an independent Poisson random
  *                          variable with mean equal to the exact value.
  */
-int TvRegSetNoiseModel(tvregopt *Opt, const char *NoiseModel) {
+static int TvRegSetNoiseModel(tvregopt *Opt, const char *NoiseModel) {
   if (!Opt) return 0;
 
   if (!NoiseModel || !strcmp(NoiseModel, "L2") || !strcmp(NoiseModel, "l2") ||
@@ -355,10 +356,10 @@ int TvRegSetNoiseModel(tvregopt *Opt, const char *NoiseModel) {
  * display of the solution progress.  PlotParam is a void pointer that can be
  * used to pass additional information to PlotFun if needed.
  */
-void TvRegSetPlotFun(tvregopt *Opt,
-                     int (*PlotFun)(int, int, num, const num *, int, int, int,
-                                    void *),
-                     void *PlotParam) {
+static void TvRegSetPlotFun(tvregopt *Opt,
+                            int (*PlotFun)(int, int, num, const num *, int, int,
+                                           int, void *),
+                            void *PlotParam) {
   if (Opt) {
     Opt->PlotFun = PlotFun;
     Opt->PlotParam = PlotParam;
@@ -366,10 +367,39 @@ void TvRegSetPlotFun(tvregopt *Opt,
 }
 
 /**
+ * @brief Get a string description of the selected restoration algorithm
+ * @param Opt tvregopt options object
+ * @return String describing the selected algorithm
+ *
+ * This routine calls TvRestoreChooseAlgorithm() and translates the result to
+ * a text string.  The string is stored in a small buffer within the tvregopt
+ * and does not need to be released separately.
+ */
+static const char *TvRegGetAlgorithm(const tvregopt *Opt) {
+  static const char *DefaultAlgorithm =
+      (char *)"split Bregman (d = grad u) Gauss-Seidel u-solver";
+  static const char *Invalid = (char *)"(invalid)";
+  usolver USolveFun;
+  zsolver ZSolveFun;
+  int UseZ, DeconvFlag, DctFlag;
+
+  if (!Opt) return DefaultAlgorithm;
+
+  if (!TvRestoreChooseAlgorithm(&UseZ, &DeconvFlag, &DctFlag, &USolveFun,
+                                &ZSolveFun, Opt))
+    return Invalid;
+
+  sprintf(Opt->AlgString, "split Bregman (%s) %s u-solver",
+          (UseZ) ? "d = grad u, z = Ku" : "d = grad u",
+          (!DeconvFlag) ? "Gauss-Seidel" : ((DctFlag) ? "DCT" : "Fourier"));
+  return Opt->AlgString;
+}
+
+/**
  * @brief Debugging function that prints the current options
  * @param Opt tvregopt options object
  */
-void TvRegPrintOpt(const tvregopt *Opt) {
+static void TvRegPrintOpt(const tvregopt *Opt) {
   if (!Opt) Opt = &TvRegDefaultOpt;
 
   printf("lambda    : ");
@@ -417,33 +447,4 @@ void TvRegPrintOpt(const tvregopt *Opt) {
     printf("custom\n");
 
   printf("algorithm : %s\n", TvRegGetAlgorithm(Opt));
-}
-
-/**
- * @brief Get a string description of the selected restoration algorithm
- * @param Opt tvregopt options object
- * @return String describing the selected algorithm
- *
- * This routine calls TvRestoreChooseAlgorithm() and translates the result to
- * a text string.  The string is stored in a small buffer within the tvregopt
- * and does not need to be released separately.
- */
-const char *TvRegGetAlgorithm(const tvregopt *Opt) {
-  static const char *DefaultAlgorithm =
-      (char *)"split Bregman (d = grad u) Gauss-Seidel u-solver";
-  static const char *Invalid = (char *)"(invalid)";
-  usolver USolveFun;
-  zsolver ZSolveFun;
-  int UseZ, DeconvFlag, DctFlag;
-
-  if (!Opt) return DefaultAlgorithm;
-
-  if (!TvRestoreChooseAlgorithm(&UseZ, &DeconvFlag, &DctFlag, &USolveFun,
-                                &ZSolveFun, Opt))
-    return Invalid;
-
-  sprintf(Opt->AlgString, "split Bregman (%s) %s u-solver",
-          (UseZ) ? "d = grad u, z = Ku" : "d = grad u",
-          (!DeconvFlag) ? "Gauss-Seidel" : ((DctFlag) ? "DCT" : "Fourier"));
-  return Opt->AlgString;
 }

@@ -16,7 +16,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "dsolve_inc.c"
 #include "tvregopt.h"
 
 // TODO: Fix
@@ -284,9 +283,9 @@ static int IsSymmetric(const num *Kernel, int KernelWidth, int KernelHeight) {
 }
 
 /** @brief Algorithm planning function */
-static int TvRestoreChooseAlgorithm(int *UseZ, int *DeconvFlag, int *DctFlag,
-                                    usolver *USolveFun, zsolver *ZSolveFun,
-                                    const tvregopt *Opt) {
+int TvRestoreChooseAlgorithm(int *UseZ, int *DeconvFlag, int *DctFlag,
+                             usolver *USolveFun, zsolver *ZSolveFun,
+                             const tvregopt *Opt) {
   if (!Opt) return 0;
 
   /* UseZ decides between the simpler d,u splitting or the d,u,z splitting

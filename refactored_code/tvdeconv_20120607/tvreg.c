@@ -19,7 +19,6 @@
 #include "tvregopt.h"
 
 // TODO: Fix
-#include "usolve_dct_inc.c"
 #include "usolve_dft_inc.c"
 
 /**

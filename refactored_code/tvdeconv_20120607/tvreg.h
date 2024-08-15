@@ -71,3 +71,36 @@ int TvRestoreChooseAlgorithm(int *UseZ, int *DeconvFlag, int *DctFlag,
  * NumChannels-1.  This structure is also used for \f$ \tilde d \f$.
  */
 void DSolve(tvregsolver *S);
+
+/**
+ * @brief Intializations to prepare TvRestore for DCT-based deconvolution
+ * @param S tvreg solver state
+ * @return 1 on success, 0 on failure
+ *
+ * This routine sets up FFTW transform plans and precomputes the
+ * transform \f$ \mathcal{C}_\mathrm{1e}(\frac{\lambda}{\gamma}\varphi *
+ * \varphi-\Delta) \f$ in S->DenomTrans.  If UseZ = 0, the transform
+ * \f$ \mathcal{C}_\mathrm{2e}(\frac{\lambda}{\gamma}\varphi *f) \f$ is
+ * precomputed in S->ATrans.
+ */
+int InitDeconvDct(tvregsolver *S);
+
+/**
+ * @brief Solve the u subproblem using DCT transforms (UseZ = 0)
+ * @param S tvreg solver state
+ *
+ * This routine solves the u-subproblem
+ * \f[ \tfrac{\lambda}{\gamma}\varphi *\varphi *u -\Delta u = \tfrac{\lambda}{
+ * \gamma}\varphi *f -\operatorname{div}\tilde{d}. \f]
+ * The solution is obtained using discrete cosine transforms (DCTs) as
+ * \f[ u=\mathcal{C}_\mathrm{2e}^{-1}\left[\frac{\mathcal{C}_\mathrm{2e}
+ * \bigl(\frac{\lambda}{\gamma}\varphi *f-\operatorname{div}\tilde{d}\bigr)}{
+ * \mathcal{C}_\mathrm{1e}(\frac{\lambda}{\gamma}\varphi *\varphi-\Delta)}
+ * \right], \f]
+ * where \f$ \mathcal{C}_\mathrm{1e} \f$ and \f$ \mathcal{C}_\mathrm{2e} \f$
+ * denote the DCT-I and DCT-II transforms of the same period lengths.  Two of
+ * the above quantities are precomputed by InitDeconvDct(): the transform of
+ * \f$ \frac{\lambda}{\gamma}\varphi *f \f$ is stored in S->ATrans and the
+ * transformed denominator is stored in S->DenomTrans.
+ */
+num UDeconvDct(tvregsolver *S);

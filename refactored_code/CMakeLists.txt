@@ -24,7 +24,7 @@ add_executable(
     tvdeconv_20120607/tvregopt.h
     tvdeconv_20120607/util_deconv.h
     tvdeconv_20120607/dsolve_inc.c
-    # tvdeconv_20120607/usolve_dct_inc.c
+    tvdeconv_20120607/usolve_dct_inc.c
     # tvdeconv_20120607/usolve_dft_inc.c
     tvdeconv_20120607/tvreg.c
     tvdeconv_20120607/tvreg.h

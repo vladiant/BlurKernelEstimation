@@ -104,3 +104,27 @@ int InitDeconvDct(tvregsolver *S);
  * transformed denominator is stored in S->DenomTrans.
  */
 num UDeconvDct(tvregsolver *S);
+
+/**
+ * @brief Solve the u-subproblem using DFT transforms (UseZ = 0)
+ *
+ * This routine solves the u-subproblem
+ * \f[ \tfrac{\lambda}{\gamma}K^* Ku -\Delta u = \tfrac{\lambda}{
+ * \gamma}K^* f -\operatorname{div}\tilde{d}, \f]
+ * where K denotes the blur operator \f$ Ku := \varphi * u \f$.  The solution
+ * is obtained using the discrete Fourier transform (DFT) as
+ * \f[ u=\mathcal{F}^{-1}\left[\frac{\frac{\lambda}{\gamma}\overline{
+ * \mathcal{F}(\varphi)}\cdot\mathcal{F}(Ef)- \mathcal{F}\bigl(E
+ * \operatorname{div}(d-b)\bigr)}{\frac{\lambda}{\gamma}\lvert\mathcal{F}(
+ * \varphi)\rvert^2 - \mathcal{F}(\Delta)}\right], \f]
+ * where E denotes symmetric extension and \f$ \mathcal{F} \f$ denotes the
+ * DFT.
+ */
+num UDeconvFourier(tvregsolver *S);
+
+/**
+ * @brief Intializations to prepare TvRestore for Fourier deconvolution
+ * @param S tvreg solver state
+ * @return 1 on success, 0 on failure
+ */
+int InitDeconvFourier(tvregsolver *S);

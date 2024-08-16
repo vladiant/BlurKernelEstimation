@@ -18,9 +18,6 @@
 
 #include "tvregopt.h"
 
-// TODO: Fix
-#include "usolve_dft_inc.c"
-
 /**
  * @brief Total variation based image restoration
  * @param u initial guess, overwritten with restored image

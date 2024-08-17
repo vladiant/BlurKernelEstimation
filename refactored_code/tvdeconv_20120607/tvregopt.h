@@ -200,36 +200,6 @@ static void TvRegSetLambda(tvregopt *Opt, num Lambda) {
 }
 
 /**
- * @brief Specify spatially varying fidelity weight
- * @param Opt tvregopt options object
- * @param VaryingLambda pointer to Lambda array
- * @param LambdaWidth, LambdaHeight dimensions of the array
- *
- * VaryingLambda should be a contiguous array of size LambdaWidth by
- * LambdaHeight in row-major order of nonnegative values,
- *    VaryingLambda[x + Width*y] = fidelity weight at pixel (x,y).
- * Smaller VaryingLambda at a point implies stronger denoising, and a value
- * of zero specifies that the point should be inpainted.
- *
- * If VaryingLambda = NULL, the constant Lambda value is used.
- *
- * For inpainting, set VaryingLambda as
- *    VaryingLambda[x + Width*y] = 0 if pixel (x,y) is unknown,
- *    VaryingLambda[x + Width*y] = C if pixel (x,y) is known,
- * where C is a positive constant.  Unknown pixels are inpainted (interpolated).
- * Known pixels are denoised (and deconvolved, if a kernel is also set).  To
- * keep the known pixels (approximately) unchanged, set C to a large value.
- */
-static void TvRegSetVaryingLambda(tvregopt *Opt, const num *VaryingLambda,
-                                  int LambdaWidth, int LambdaHeight) {
-  if (Opt) {
-    Opt->VaryingLambda = VaryingLambda;
-    Opt->LambdaWidth = LambdaWidth;
-    Opt->LambdaHeight = LambdaHeight;
-  }
-}
-
-/**
  * @brief Specify kernel for a deconvolution problem
  * @param Opt tvregopt options object
  * @param Kernel pointer to convolution kernel
@@ -268,55 +238,12 @@ static void TvRegSetGamma1(tvregopt *Opt, num Gamma1) {
 }
 
 /**
- * @brief Specify z = Ku constraint weight
- * @param Opt tvregopt options object
- * @param Gamma1 penalty (positive scalar)
- */
-static void TvRegSetGamma2(tvregopt *Opt, num Gamma2) {
-  if (Opt) Opt->Gamma2 = Gamma2;
-}
-
-/**
  * @brief Specify the maximum number of iterations
  * @param Opt tvregopt options object
  * @param MaxIter maximum number of iterations
  */
 static void TvRegSetMaxIter(tvregopt *Opt, int MaxIter) {
   if (Opt) Opt->MaxIter = MaxIter;
-}
-
-/**
- * @brief Specify noise model
- * @param Opt tvregopt options object
- * @param NoiseModel string
- *
- * NoiseModel should be a string specifying one of the following:
- *
- *   - 'Gaussian' or 'L2'   (default) Additive white Gaussian noise (AWGN),
- *                          this is the noise model used in the traditional
- *                          Rudin-Osher-Fatemi model;
- *
- *   - 'Laplace' or 'L1'    Laplace noise, effective for salt & pepper noise;
- *
- *   - 'Poisson'            Each pixel is an independent Poisson random
- *                          variable with mean equal to the exact value.
- */
-static int TvRegSetNoiseModel(tvregopt *Opt, const char *NoiseModel) {
-  if (!Opt) return 0;
-
-  if (!NoiseModel || !strcmp(NoiseModel, "L2") || !strcmp(NoiseModel, "l2") ||
-      !strcmp(NoiseModel, "Gaussian") || !strcmp(NoiseModel, "gaussian"))
-    Opt->NoiseModel = NOISEMODEL_L2;
-  else if (!strcmp(NoiseModel, "L1") || !strcmp(NoiseModel, "l1") ||
-           !strcmp(NoiseModel, "Laplace") || !strcmp(NoiseModel, "laplace") ||
-           !strcmp(NoiseModel, "Laplacian") || !strcmp(NoiseModel, "laplacian"))
-    Opt->NoiseModel = NOISEMODEL_L1;
-  else if (!strcmp(NoiseModel, "Poisson") || !strcmp(NoiseModel, "poisson"))
-    Opt->NoiseModel = NOISEMODEL_POISSON;
-  else
-    return 0;
-
-  return 1;
 }
 
 /**
@@ -364,87 +291,4 @@ static void TvRegSetPlotFun(tvregopt *Opt,
     Opt->PlotFun = PlotFun;
     Opt->PlotParam = PlotParam;
   }
-}
-
-/**
- * @brief Get a string description of the selected restoration algorithm
- * @param Opt tvregopt options object
- * @return String describing the selected algorithm
- *
- * This routine calls TvRestoreChooseAlgorithm() and translates the result to
- * a text string.  The string is stored in a small buffer within the tvregopt
- * and does not need to be released separately.
- */
-static const char *TvRegGetAlgorithm(const tvregopt *Opt) {
-  static const char *DefaultAlgorithm =
-      (char *)"split Bregman (d = grad u) Gauss-Seidel u-solver";
-  static const char *Invalid = (char *)"(invalid)";
-  usolver USolveFun;
-  zsolver ZSolveFun;
-  int UseZ, DeconvFlag, DctFlag;
-
-  if (!Opt) return DefaultAlgorithm;
-
-  if (!TvRestoreChooseAlgorithm(&UseZ, &DeconvFlag, &DctFlag, &USolveFun,
-                                &ZSolveFun, Opt))
-    return Invalid;
-
-  sprintf(Opt->AlgString, "split Bregman (%s) %s u-solver",
-          (UseZ) ? "d = grad u, z = Ku" : "d = grad u",
-          (!DeconvFlag) ? "Gauss-Seidel" : ((DctFlag) ? "DCT" : "Fourier"));
-  return Opt->AlgString;
-}
-
-/**
- * @brief Debugging function that prints the current options
- * @param Opt tvregopt options object
- */
-static void TvRegPrintOpt(const tvregopt *Opt) {
-  if (!Opt) Opt = &TvRegDefaultOpt;
-
-  printf("lambda    : ");
-
-  if (!Opt->VaryingLambda)
-    printf("%g\n", Opt->Lambda);
-  else
-    printf("[%d x %d]\n", Opt->LambdaWidth, Opt->LambdaHeight);
-
-  printf("K         : ");
-
-  if (!Opt->Kernel)
-    printf("(identity)\n");
-  else
-    printf("[%d x %d]\n", Opt->KernelWidth, Opt->KernelHeight);
-
-  printf("tol       : %g\n", (double)Opt->Tol);
-  printf("max iter  : %d\n", Opt->MaxIter);
-  printf("gamma1    : %g\n", (double)Opt->Gamma1);
-  printf("gamma2    : %g\n", (double)Opt->Gamma2);
-  printf("noise     : ");
-
-  switch (Opt->NoiseModel) {
-    case NOISEMODEL_L2:
-      printf("L2\n");
-      break;
-    case NOISEMODEL_L1:
-      printf("L1\n");
-      break;
-    case NOISEMODEL_POISSON:
-      printf("Poisson\n");
-      break;
-    default:
-      printf("(invalid)\n");
-      break;
-  }
-
-  printf("plotting  : ");
-
-  if (Opt->PlotFun == TvRestoreSimplePlot)
-    printf("default\n");
-  else if (!Opt->PlotFun)
-    printf("none\n");
-  else
-    printf("custom\n");
-
-  printf("algorithm : %s\n", TvRegGetAlgorithm(Opt));
 }

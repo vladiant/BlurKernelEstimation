@@ -60,7 +60,6 @@
  *    - TvRegSetKernel():         Kernel for deconvolution problems
  *    - TvRegSetTol():            convergence tolerance
  *    - TvRegSetMaxIter():        maximum number of iterations
- *    - TvRegSetNoiseModel():     noise model
  *    - TvRegSetGamma1():         constraint weight on d = grad u
  *    - TvRegSetGamma2():         constraint weight on z = Ku
  *    - TvRegSetPlotFun():        custom plotting function

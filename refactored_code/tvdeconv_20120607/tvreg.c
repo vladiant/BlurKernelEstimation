@@ -56,12 +56,10 @@
  * Gaussian noise model).  Then use the following functions to make settings.
  *
  *    - TvRegSetLambda():         set fidelity weight
- *    - TvRegSetVaryingLambda():  set spatially varying fidelity weight
  *    - TvRegSetKernel():         Kernel for deconvolution problems
  *    - TvRegSetTol():            convergence tolerance
  *    - TvRegSetMaxIter():        maximum number of iterations
  *    - TvRegSetGamma1():         constraint weight on d = grad u
- *    - TvRegSetGamma2():         constraint weight on z = Ku
  *    - TvRegSetPlotFun():        custom plotting function
  *
  * When done, call TvRegFreeOpt() to free the options object.  Setting

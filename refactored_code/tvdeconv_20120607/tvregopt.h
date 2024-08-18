@@ -139,24 +139,21 @@ static int TvRestoreSimplePlot(int State, int Iter, num Delta,
 }
 
 /** @brief Default options struct */
-static tvregopt TvRegDefaultOpt = {TVREGOPT_DEFAULT_LAMBDA,
-                                   NULL,
-                                   0,
-                                   0,
-                                   NULL,
-                                   0,
-                                   0,
-                                   (num)(TVREGOPT_DEFAULT_TOL),
-                                   TVREGOPT_DEFAULT_GAMMA1,
-                                   TVREGOPT_DEFAULT_GAMMA2,
-                                   TVREGOPT_DEFAULT_MAXITER,
-                                   NOISEMODEL_L2,
-                                   TvRestoreSimplePlot,
-                                   NULL,
-                                   NULL};
-
-// TODO: Test replace static with inline
-// TODO: Remove unused functions
+static const tvregopt TvRegDefaultOpt = {TVREGOPT_DEFAULT_LAMBDA,
+                                         NULL,
+                                         0,
+                                         0,
+                                         NULL,
+                                         0,
+                                         0,
+                                         (num)(TVREGOPT_DEFAULT_TOL),
+                                         TVREGOPT_DEFAULT_GAMMA1,
+                                         TVREGOPT_DEFAULT_GAMMA2,
+                                         TVREGOPT_DEFAULT_MAXITER,
+                                         NOISEMODEL_L2,
+                                         TvRestoreSimplePlot,
+                                         NULL,
+                                         NULL};
 
 /**
  * @brief Create a new tvregopt options object
@@ -166,7 +163,7 @@ static tvregopt TvRegDefaultOpt = {TVREGOPT_DEFAULT_LAMBDA,
  * default values.  It is the caller's responsibility to call TvRegFreeOpt()
  * to free the tvregopt object when done.
  */
-static tvregopt *TvRegNewOpt() {
+inline tvregopt *TvRegNewOpt() {
   tvregopt *Opt;
 
   if ((Opt = (tvregopt *)Malloc(sizeof(tvregopt)))) *Opt = TvRegDefaultOpt;
@@ -183,7 +180,7 @@ static tvregopt *TvRegNewOpt() {
  * @brief Free tvregopt options object
  * @param Opt tvregopt options object
  */
-static void TvRegFreeOpt(tvregopt *Opt) {
+inline void TvRegFreeOpt(tvregopt *Opt) {
   if (Opt) {
     if (Opt->AlgString) Free(Opt->AlgString);
     Free(Opt);
@@ -195,7 +192,7 @@ static void TvRegFreeOpt(tvregopt *Opt) {
  * @param Opt tvregopt options object
  * @param Lambda fidelity weight (positive scalar)
  */
-static void TvRegSetLambda(tvregopt *Opt, num Lambda) {
+inline void TvRegSetLambda(tvregopt *Opt, num Lambda) {
   if (Opt) Opt->Lambda = Lambda;
 }
 
@@ -210,7 +207,7 @@ static void TvRegSetLambda(tvregopt *Opt, num Lambda) {
  *    Kernel[x + KernelWidth*y] = K(x,y).
  * If Kernel = NULL, then no deconvolution is performed.
  */
-static void TvRegSetKernel(tvregopt *Opt, const num *Kernel, int KernelWidth,
+inline void TvRegSetKernel(tvregopt *Opt, const num *Kernel, int KernelWidth,
                            int KernelHeight) {
   if (Opt) {
     Opt->Kernel = Kernel;
@@ -224,7 +221,7 @@ static void TvRegSetKernel(tvregopt *Opt, const num *Kernel, int KernelWidth,
  * @param Opt tvregopt options object
  * @param Tol convergence tolerance (positive scalar)
  */
-static void TvRegSetTol(tvregopt *Opt, num Tol) {
+inline void TvRegSetTol(tvregopt *Opt, num Tol) {
   if (Opt) Opt->Tol = Tol;
 }
 
@@ -233,7 +230,7 @@ static void TvRegSetTol(tvregopt *Opt, num Tol) {
  * @param Opt tvregopt options object
  * @param Gamma1 penalty (positive scalar)
  */
-static void TvRegSetGamma1(tvregopt *Opt, num Gamma1) {
+inline void TvRegSetGamma1(tvregopt *Opt, num Gamma1) {
   if (Opt) Opt->Gamma1 = Gamma1;
 }
 
@@ -242,7 +239,7 @@ static void TvRegSetGamma1(tvregopt *Opt, num Gamma1) {
  * @param Opt tvregopt options object
  * @param MaxIter maximum number of iterations
  */
-static void TvRegSetMaxIter(tvregopt *Opt, int MaxIter) {
+inline void TvRegSetMaxIter(tvregopt *Opt, int MaxIter) {
   if (Opt) Opt->MaxIter = MaxIter;
 }
 
@@ -283,7 +280,7 @@ static void TvRegSetMaxIter(tvregopt *Opt, int MaxIter) {
  * display of the solution progress.  PlotParam is a void pointer that can be
  * used to pass additional information to PlotFun if needed.
  */
-static void TvRegSetPlotFun(tvregopt *Opt,
+inline void TvRegSetPlotFun(tvregopt *Opt,
                             int (*PlotFun)(int, int, num, const num *, int, int,
                                            int, void *),
                             void *PlotParam) {
